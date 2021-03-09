@@ -43,7 +43,7 @@ class Link extends DataObject implements
     private static $db = [
         'Title' => 'Varchar',
         'Type' => 'Varchar(50)',
-        'URL' => 'Varchar',
+        'URL' => 'Text',
         'Email' => 'Varchar',
         'Phone' => 'Varchar(30)',
         'OpenInNewWindow' => 'Boolean',
