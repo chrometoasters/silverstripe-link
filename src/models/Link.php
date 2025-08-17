@@ -15,11 +15,13 @@ use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Control\Director;
 use SilverStripe\CMS\Controllers\ContentController;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use UncleCheese\DisplayLogic\Forms\Wrapper;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Core\Validation\ValidationResult;
+use SilverStripe\ORM\FieldType\DBField;
 
 /**
  * Link
@@ -67,9 +69,9 @@ class Link extends DataObject
     private static $has_one = [
         'File' => File::class
     ];
-    
+
     private static $owns = [
-       'File',   
+       'File',
     ];
 
     /**
@@ -299,10 +301,10 @@ class Link extends DataObject
      * Validate
      * @return ValidationResult
      */
-    public function validate()
+    public function validate(): ValidationResult
     {
         $valid = true;
-        $message = null;
+        $message = '';
         $type = $this->Type;
 
         // Check if empty strings
@@ -344,7 +346,7 @@ class Link extends DataObject
                         $valid = false;
                         $message = _t(
                             __CLASS__ . '.VALIDATIONERROR_VALIDURL',
-                            'Please enter a valid URL.  Be sure to include http:// for an external URL. or begin your internal url/anchor with a "/" character'
+                            'Please enter a valid URL.  Be sure to include https:// for an external URL or begin your internal url/anchor with a "/" character'
                         );
                     }
                     break;
@@ -370,7 +372,7 @@ class Link extends DataObject
         }
 
         $result = ValidationResult::create();
-        if (!$valid) {
+        if (!$valid && $message) {
             $result->addError($message);
         }
 
@@ -692,7 +694,7 @@ class Link extends DataObject
     public function isCurrent()
     {
         $isCurrent = false;
-        $this->extend('UpdateIsCurrent', $isCurrent);
+        $this->extend('updateIsCurrent', $isCurrent);
         return $isCurrent;
     }
 
@@ -805,6 +807,11 @@ class Link extends DataObject
         }
         $this->extend('updateTemplate', $link);
         return $link;
+    }
+
+    public function getFormattedValue(): DBHTMLText
+    {
+        return DBField::create_field('HTMLFragment', $this->forTemplate());
     }
 
     /**

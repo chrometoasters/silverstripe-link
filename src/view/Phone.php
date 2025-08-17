@@ -5,14 +5,14 @@ namespace gorriecoe\Link\View;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
 use \libphonenumber\PhoneNumber;
-use SilverStripe\View\ViewableData;
+use SilverStripe\Model\ModelData;
 
 /**
  * Phone
  *
  * @package silverstripe-link
  */
-class Phone extends ViewableData
+class Phone extends ModelData
 {
     /**
      * @var \libphonenumber\PhoneNumberUtil
@@ -130,7 +130,7 @@ class Phone extends ViewableData
     /**
      * @return HTML
      */
-    public function Render()
+    public function Render(): string
     {
         if ($this->fromCountry) {
             return $this->library->formatOutOfCountryCallingNumber(
@@ -148,7 +148,7 @@ class Phone extends ViewableData
     /**
      * @return HTML
      */
-    public function forTemplate()
+    public function forTemplate(): string
     {
         return $this->Render();
     }
